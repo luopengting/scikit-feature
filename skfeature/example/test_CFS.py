@@ -1,6 +1,7 @@
 import scipy.io
 from sklearn import svm
-from sklearn import cross_validation
+# from sklearn import cross_validation
+from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from skfeature.function.statistical_based import CFS
 
@@ -15,14 +16,14 @@ def main():
     n_samples, n_features = X.shape    # number of samples and number of features
 
     # split data into 10 folds
-    ss = cross_validation.KFold(n_samples, n_folds=10, shuffle=True)
+    ss = KFold(n_splits=10)
 
     # perform evaluation on classification task
     num_fea = 100    # number of selected features
     clf = svm.LinearSVC()    # linear SVM
 
     correct = 0
-    for train, test in ss:
+    for train, test in ss.split(X):
         # obtain the index of selected features on training set
         idx = CFS.cfs(X[train], y[train])
 
@@ -40,7 +41,7 @@ def main():
         correct = correct + acc
 
     # output the average classification accuracy over all 10 folds
-    print 'Accuracy:', float(correct)/10
+    print('Accuracy:', float(correct)/10)
 
 if __name__ == '__main__':
     main()

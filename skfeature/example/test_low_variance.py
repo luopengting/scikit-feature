@@ -16,6 +16,9 @@ def main():
 
     # perform feature selection and obtain the dataset on the selected features
     selected_features = low_variance.low_variance_feature_selection(X, p*(1-p))
+    print(selected_features)
+
+    print(selected_features.shape)
 
     # perform kmeans clustering based on the selected features and repeats 20 times
     nmi_total = 0
@@ -26,8 +29,8 @@ def main():
         acc_total += acc
 
     # output the average NMI and average ACC
-    print 'NMI:', float(nmi_total)/20
-    print 'ACC:', float(acc_total)/20
+    print('NMI:', float(nmi_total)/20)
+    print('ACC:', float(acc_total)/20)
 
 if __name__ == '__main__':
     main()

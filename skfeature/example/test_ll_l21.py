@@ -1,6 +1,8 @@
 import scipy.io
 from sklearn import svm
-from sklearn import cross_validation
+# from sklearn import cross_validation
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from skfeature.utility.sparse_learning import *
 from skfeature.function.sparse_learning_based import ll_l21
@@ -16,15 +18,19 @@ def main():
     Y = construct_label_matrix_pan(y)
     n_samples, n_features = X.shape    # number of samples and number of features
 
+    X = X[:200]
+    Y = Y[:200]
+
     # split data into 10 folds
-    ss = cross_validation.KFold(n_samples, n_folds=10, shuffle=True)
+    # ss = cross_validation.KFold(n_samples, n_folds=10, shuffle=True)
+    ss = KFold(n_splits=10)
 
     # perform evaluation on classification task
     num_fea = 100    # number of selected features
     clf = svm.LinearSVC()    # linear SVM
 
     correct = 0
-    for train, test in ss:
+    for train, test in ss.split(X):
         # obtain the feature weight matrix
         Weight, obj, value_gamma = ll_l21.proximal_gradient_descent(X[train], Y[train], 0.1, verbose=False)
 
@@ -45,7 +51,7 @@ def main():
         correct = correct + acc
 
     # output the average classification accuracy over all 10 folds
-    print 'Accuracy:', float(correct)/10
+    print('Accuracy:', float(correct)/10)
 
 if __name__ == '__main__':
     main()
